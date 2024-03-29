@@ -43,6 +43,7 @@ public class SessionService {
             sessionList.add(dto);
         }
 
+        
         respuesta.setExito(true);
         respuesta.getDatos().add(sessionList);
         respuesta.setMensaje("Conferencias obtenidas");
@@ -68,6 +69,57 @@ public class SessionService {
         return respuesta;
     }
 
+    public RespuestaGenerica deleteSession(Long id){
+        RespuestaGenerica respuesta = new RespuestaGenerica();
+        SessionDto sessionDto = new SessionDto();
+        Session session = sessionRepository.findById(id).orElseThrow(()-> new EntityNotFoundException());
+        
+        List<Attendance> attendances = attendanceRepository.findBySession(session);
+        
+        for (Attendance attendance : attendances) {
+            attendanceRepository.delete(attendance);
+        }
+
+        sessionDto.setId_session(session.getId_session());
+        sessionDto.setDate(session.getDate());
+        sessionDto.setName(session.getName());
+        sessionDto.setTopic(session.getTopic());
+
+        sessionRepository.delete(session);
+
+        respuesta.setExito(true);
+        respuesta.getDatos().add(sessionDto);
+        respuesta.setMensaje("Sesion eliminada");
+
+        return respuesta;
+    }
+
+
+    public RespuestaGenerica updateSession(SessionDto dto){
+        RespuestaGenerica respuesta = new RespuestaGenerica();
+        Session session = sessionRepository.findById(dto.getId_session()).orElseThrow(()-> new EntityNotFoundException()); 
+
+        if (dto.getName() != null) {
+            session.setName(dto.getName());
+        }
+
+        if (dto.getTopic() != null) {
+            session.setTopic(dto.getTopic());
+        }
+        
+        if (dto.getDate() != null) {
+            session.setDate(dto.getDate());
+        }
+
+        sessionRepository.save(session);
+        
+        respuesta.setExito(true);
+        respuesta.getDatos().add(dto);
+        respuesta.setMensaje("Conferencia actualizada");
+
+        return respuesta;
+    }
+
 
     public RespuestaGenerica asignarUsuarioASesionByID(AttendanceDto dto){
         RespuestaGenerica respuesta = new RespuestaGenerica();
@@ -84,6 +136,22 @@ public class SessionService {
         respuesta.setExito(true);
         respuesta.getDatos().add(dto);
         respuesta.setMensaje("Usuario "+user.getId_user()+" inscrito a la conferencia "+session.getId_session());
+        return respuesta;
+    }
+
+    public RespuestaGenerica eliminarUsuarioDeSesionByID(AttendanceDto dto){
+        RespuestaGenerica respuesta = new RespuestaGenerica();
+        Session session = sessionRepository.findById(dto.getSession()).orElseThrow(()->new EntityNotFoundException("Sesion no encontrada"));
+        User user = userRepository.findById(dto.getUser()).orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
+        List<Attendance> attendanceToDeleteUser = attendanceRepository.findBySessionAndUser(session, user);
+
+        for (Attendance attendance : attendanceToDeleteUser) {
+            attendanceRepository.delete(attendance);
+        }
+
+        respuesta.setExito(true);
+        respuesta.getDatos().add(dto);
+        respuesta.setMensaje("Usuario " + dto.getUser() +" eliminado de la sesion "+dto.getSession());
         return respuesta;
     }
 
@@ -108,4 +176,7 @@ public class SessionService {
 
         return respuesta;
     }
+
+
+    
 }

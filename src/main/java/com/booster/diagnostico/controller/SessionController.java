@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -39,11 +41,46 @@ public class SessionController {
 
         return new ResponseEntity<>(respuesta,status);
     }   
+    
 
     @PostMapping("/save")
     public ResponseEntity<RespuestaGenerica> nuevaSesion(@RequestBody SessionDto dto){
 
         RespuestaGenerica respuesta = sessionService.newSesion(dto);
+        HttpStatus status = null;
+
+        if (respuesta.isExito()) {
+        status = HttpStatus.OK;
+        respuesta.setCodigo(status.value());
+        } else {
+        status = HttpStatus.NOT_FOUND;
+        respuesta.setCodigo(status.value());
+        }
+
+        return new ResponseEntity<>(respuesta,status);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<RespuestaGenerica> eliminarSesion(Long id_session){
+
+        RespuestaGenerica respuesta = sessionService.deleteSession(id_session);
+        HttpStatus status = null;
+
+        if (respuesta.isExito()) {
+        status = HttpStatus.OK;
+        respuesta.setCodigo(status.value());
+        } else {
+        status = HttpStatus.NOT_FOUND;
+        respuesta.setCodigo(status.value());
+        }
+
+        return new ResponseEntity<>(respuesta,status);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<RespuestaGenerica> actualizarSesion(@RequestBody SessionDto dto){
+
+        RespuestaGenerica respuesta = sessionService.updateSession(dto);
         HttpStatus status = null;
 
         if (respuesta.isExito()) {
@@ -74,6 +111,24 @@ public class SessionController {
         return new ResponseEntity<>(respuesta,status);
     }
 
+
+    @DeleteMapping("/delete/cancelByUser")
+    public ResponseEntity<RespuestaGenerica> CancelarAsistenciaPorId(@RequestBody AttendanceDto dto){
+
+        RespuestaGenerica respuesta = sessionService.eliminarUsuarioDeSesionByID(dto);
+        HttpStatus status = null;
+
+        if (respuesta.isExito()) {
+        status = HttpStatus.OK;
+        respuesta.setCodigo(status.value());
+        } else {
+        status = HttpStatus.NOT_FOUND;
+        respuesta.setCodigo(status.value());
+        }
+
+        return new ResponseEntity<>(respuesta,status);
+    }
+    
     @GetMapping("/attendance")
     public ResponseEntity<RespuestaGenerica> obtenerListaAsistencia(Long id_session){
 

@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Attendance {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_attendance")
 	private Long id_attendance;
 	

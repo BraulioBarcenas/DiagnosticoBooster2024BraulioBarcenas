@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Session {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_session")
 	private Long id_session;
 	
