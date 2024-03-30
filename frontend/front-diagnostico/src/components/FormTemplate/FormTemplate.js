@@ -20,7 +20,8 @@ function FormTemplate(props) {
         })
           .then(function (response) {
             console.log(response);
-            alert('Usuario agregado')
+            alert('Usuario agregado');
+            window.location.reload();
           })
           .catch(function (error) {
             console.log(error);

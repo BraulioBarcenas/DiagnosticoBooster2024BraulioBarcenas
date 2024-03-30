@@ -17,7 +17,7 @@ import com.booster.diagnostico.data.dto.RespuestaGenerica;
 import com.booster.diagnostico.data.dto.SessionDto;
 import com.booster.diagnostico.service.SessionService;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping("/api/sessions")
 public class SessionController {
